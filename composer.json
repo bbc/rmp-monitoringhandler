@@ -1,0 +1,28 @@
+{
+    "name": "bbc-rmp/monitoringhandler",
+    "type": "library",
+    "license": "proprietary",
+    "description": "Handler for RMP projects to post monitoring events to cloudwatch",
+
+    "authors":[
+        {
+            "name": "Jason Williams",
+            "email": "jason.williams01@bbc.co.uk"
+        }
+    ],
+
+    "require": {
+        "php": ">= 5.6",
+        "aws/aws-sdk-php": "3.*"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+    },
+
+    "autoload": {
+        "psr-4": {
+            "RMP": "src"
+        }
+    }
+}
