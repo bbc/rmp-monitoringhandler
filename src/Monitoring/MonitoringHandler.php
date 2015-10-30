@@ -24,11 +24,70 @@ use AWS\Cloudwatch;
 class MonitoringHandler
 {
     protected $client;
-    protected $namespace
+    protected $namespace;
 
     public function __construct(Cloudwatch $client, string $namespace)
     {
         $this->client = $client;
         $this->namespace = 'BBCApp/' . $namespace;
+    }
+
+    /**
+     * Generic function which will put metric data, and act as the lower level function for most calls in this class
+     *
+     * @return  bool
+     * @param string $metricName Metricname
+     * @param int $value value of metric
+     * @param array $dimensions dimensions
+     *
+    */
+    public function putMetricData(string $metricName, int $value, array $dimensions)
+    {
+        $this->client->putMetricData(array(
+            'Namespace' => $this->namespace,
+            'MetricData' => array(
+                'MetricName' => $metricName,
+                'Dimensions' => $dimensions,
+                'Value' => $value
+                )
+            )
+        )
+    }
+
+    /**
+     * Shortcut method for calling API's such as Blur or nitro,
+     *
+     * @return  bool
+     * @param string $backend backend
+     * @param string $type type of request made such as: totalRequests, 404, 500 slow etc
+     *
+    */
+    public function addApiCall(string $backend, string $type, )
+    {
+        $this->putMetricData("apicalls", 1, array('backend' => $backend, 'type' => $type))
+    }
+
+    /* ---- Application Errors ----  */
+
+    /**
+    * This is a dimension for application errors, this is a generic catch-all within the application will live in here
+    */
+    public function applicationError() {
+        $this->putMetricData('applicationError', 1, array('error' => "500"));
+    }
+
+
+    /**
+    * This is an dimensions for 404 on application errors, all errors within the application will live in here
+    */
+    public function application404Error() {
+        $this->putMetricData('applicationError', 1, array('error' => "404"));
+    }
+
+    /**
+    * This is an custom dimensions on the application errors meric, an example of this usage is if the application has a specifc statusCode
+    */
+    public function customApplicationError(string $dimensionName) {
+        $this->putMetricData('applicationError', 1, array('error' => $dimensionName));
     }
 }
