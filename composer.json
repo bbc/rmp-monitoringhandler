@@ -21,8 +21,8 @@
     },
 
     "autoload": {
-        "psr-0": {
-            "RMP": "src/"
+        "psr-4": {
+            "RMP\\Monitoring\\": "src/"
         }
     }
 }
