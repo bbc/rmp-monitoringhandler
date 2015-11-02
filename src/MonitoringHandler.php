@@ -10,7 +10,7 @@
 
 namespace RMP\Monitoring;
 
-use AWS\Cloudwatch;
+use AWS\Cloudwatch\CloudWatchClient;
 
 /**
 * Class MonitoringHandler
@@ -26,7 +26,7 @@ class MonitoringHandler
     protected $client;
     protected $namespace;
 
-    public function __construct(Cloudwatch $client, string $namespace)
+    public function __construct(CloudWatchClient $client, $namespace)
     {
         $this->client = $client;
         $this->namespace = 'BBCApp/' . $namespace;
@@ -51,7 +51,7 @@ class MonitoringHandler
                 'Value' => $value
                 )
             )
-        )
+        );
     }
 
     /**
@@ -62,9 +62,9 @@ class MonitoringHandler
      * @param string $type type of request made such as: totalRequests, 404, 500 slow etc
      *
     */
-    public function addApiCall(string $backend, string $type, )
+    public function addApiCall(string $backend, $type)
     {
-        $this->putMetricData("apicalls", 1, array('backend' => $backend, 'type' => $type))
+        $this->putMetricData("apicalls", 1, array('backend' => $backend, 'type' => $type));
     }
 
     /* ---- Application Errors ----  */
