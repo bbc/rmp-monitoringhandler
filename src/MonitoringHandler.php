@@ -41,7 +41,7 @@ class MonitoringHandler
      * @param array $dimensions dimensions
      *
     */
-    public function putMetricData($metricName, int $value, array $dimensions)
+    public function putMetricData($metricName, $value, $dimensions)
     {
         $this->client->putMetricData(array(
             'Namespace' => $this->namespace,
@@ -62,7 +62,7 @@ class MonitoringHandler
      * @param string $type type of request made such as: totalRequests, 404, 500 slow etc
      *
     */
-    public function addApiCall(string $backend, $type)
+    public function addApiCall($backend, $type)
     {
         $this->putMetricData("apicalls", 1, array('backend' => $backend, 'type' => $type));
     }
