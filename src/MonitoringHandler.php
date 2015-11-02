@@ -46,9 +46,11 @@ class MonitoringHandler
         $this->client->putMetricData(array(
             'Namespace' => $this->namespace,
             'MetricData' => array(
-                'MetricName' => $metricName,
-                'Dimensions' => $dimensions,
-                'Value' => $value
+                array(
+                    'MetricName' => $metricName,
+                    'Dimensions' => $dimensions,
+                    'Value' => $value
+                    )
                 )
             )
         );
@@ -64,7 +66,16 @@ class MonitoringHandler
     */
     public function addApiCall($backend, $type)
     {
-        $this->putMetricData("apicalls", 1, array('backend' => $backend, 'type' => $type));
+        $this->putMetricData("apicalls", 1, array(
+            array(
+                'Name' => 'backend',
+                'Value' => $backend
+                ),
+            array(
+                'Name' => 'type',
+                'Value' => '$type')
+            )
+        );
     }
 
     /* ---- Application Errors ----  */
@@ -73,7 +84,7 @@ class MonitoringHandler
     * This is a dimension for application errors, this is a generic catch-all within the application will live in here
     */
     public function applicationError() {
-        $this->putMetricData('applicationError', 1, array('error' => "500"));
+        $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => '500')));
     }
 
 
@@ -81,13 +92,13 @@ class MonitoringHandler
     * This is an dimensions for 404 on application errors, all errors within the application will live in here
     */
     public function application404Error() {
-        $this->putMetricData('applicationError', 1, array('error' => "404"));
+        $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => '404')));
     }
 
     /**
     * This is an custom dimensions on the application errors meric, an example of this usage is if the application has a specifc statusCode
     */
     public function customApplicationError($dimensionName) {
-        $this->putMetricData('applicationError', 1, array('error' => $dimensionName));
+        $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => $dimensionName)));
     }
 }
