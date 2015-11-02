@@ -41,7 +41,7 @@ class MonitoringHandler
      * @param array $dimensions dimensions
      *
     */
-    public function putMetricData(string $metricName, int $value, array $dimensions)
+    public function putMetricData($metricName, int $value, array $dimensions)
     {
         $this->client->putMetricData(array(
             'Namespace' => $this->namespace,
