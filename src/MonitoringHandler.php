@@ -87,7 +87,7 @@ class MonitoringHandler
     /**
     * This is an custom dimensions on the application errors meric, an example of this usage is if the application has a specifc statusCode
     */
-    public function customApplicationError(string $dimensionName) {
+    public function customApplicationError($dimensionName) {
         $this->putMetricData('applicationError', 1, array('error' => $dimensionName));
     }
 }
