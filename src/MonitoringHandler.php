@@ -10,7 +10,7 @@
 
 namespace RMP\Monitoring;
 
-use AWS\Cloudwatch\CloudWatchClient;
+use Aws\CloudWatch\CloudWatchClient;
 
 /**
 * Class MonitoringHandler
@@ -57,7 +57,7 @@ class MonitoringHandler
     }
 
     /**
-     * Shortcut method for calling API's such as Blur or nitro,
+     * Shortcut method for calling monitoring on API's calls such as Blur or nitro,
      *
      * @return  bool
      * @param string $backend backend
@@ -73,7 +73,8 @@ class MonitoringHandler
                 ),
             array(
                 'Name' => 'type',
-                'Value' => '$type')
+                'Value' => $type
+                )
             )
         );
     }
@@ -81,9 +82,9 @@ class MonitoringHandler
     /* ---- Application Errors ----  */
 
     /**
-    * This is a dimension for application errors, this is a generic catch-all within the application will live in here
+    * This is a dimension for application errors, this is a 500 error within the application will live in here
     */
-    public function applicationError() {
+    public function application500Error() {
         $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => '500')));
     }
 
@@ -93,6 +94,13 @@ class MonitoringHandler
     */
     public function application404Error() {
         $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => '404')));
+    }
+
+    /**
+    * This is a dimension for application errors, this is a generic catch-all within the application will live in here
+    */
+    public function applicationError() {
+        $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => 'APPError')));
     }
 
     /**
