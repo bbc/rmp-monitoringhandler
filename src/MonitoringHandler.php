@@ -34,8 +34,9 @@ class MonitoringHandler
 
     /**
      * Generic function which will put metric data, and act as the lower level function for most calls in this class
+     * CloudWatchClient->putMetricData already uses promises under the hood, so no need to worry about these requests being async - http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/promises.html
      *
-     * @return  bool
+     * @return  void
      * @param string $metricName Metricname
      * @param int $value value of metric
      * @param array $dimensions dimensions
@@ -59,7 +60,7 @@ class MonitoringHandler
     /**
      * Shortcut method for calling monitoring on API's calls such as Blur or nitro,
      *
-     * @return  bool
+     * @return  void
      * @param string $backend backend
      * @param string $type type of request made such as: totalRequests, 404, 500 slow etc
      *
@@ -100,11 +101,12 @@ class MonitoringHandler
     * This is a dimension for application errors, this is a generic catch-all within the application will live in here
     */
     public function applicationError() {
-        $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => 'APPError')));
+        $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => 'AppError')));
     }
 
     /**
     * This is an custom dimensions on the application errors meric, an example of this usage is if the application has a specifc statusCode
+    * @param string error value
     */
     public function customApplicationError($dimensionName) {
         $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => $dimensionName)));
