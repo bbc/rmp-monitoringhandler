@@ -31,7 +31,8 @@ class MonitoringHandler
         $this->client = $client;
         $this->namespace = 'BBCApp/' . $namespace;
         /* From what i could see the PHP SDK doesn't provide you with the instance-id so you need to get it yourself */
-        $this->instanceID =  file_get_contents("http://instance-data/latest/meta-data/instance-id");
+        /* I know the @ looks dirty but if this is ran locally it will error, i also don't want this value being passed in, as its the Handlers job to get this */
+        $this->instanceID =  @file_get_contents("http://instance-data/latest/meta-data/instance-id");
         if ($this->instanceID === FALSE) {
             $this->instanceID = "None";
         }
