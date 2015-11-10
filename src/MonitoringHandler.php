@@ -32,7 +32,7 @@ class MonitoringHandler
         $this->namespace = 'BBCApp/' . $namespace;
         /* From what i could see the PHP SDK doesn't provide you with the instance-id so you need to get it yourself */
         /* Don't do this on localhost or sandboxes as it will fail, just set the instanceID to 'None' */
-        $this->instanceID = ($env === 'live') ? file_get_contents("http://instance-data/latest/meta-data/instance-id") : "None";
+        $this->instanceID = ($env !== "unittests" || $env !== "local") ? file_get_contents("http://instance-data/latest/meta-data/instance-id") : "None";
         $this->env = $env;
     }
 
