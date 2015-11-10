@@ -8,7 +8,7 @@
 * @license  http://www.php.net/license/3_01.txt  PHP License 3.01
 */
 
-namespace RMP\Monitoring;
+namespace RMP\CloudwatchMonitoring;
 
 use Aws\CloudWatch\CloudWatchClient;
 
@@ -72,7 +72,7 @@ class MonitoringHandler
      *
      * @return  void
      * @param string $backend backend
-     * @param string $type type of request made such as: totalRequests, 404, 500 slow etc
+     * @param string $type type of request made such as: total_requests, 404, 500 slow etc
      *
     */
     public function addApiCall($backend, $type)
@@ -119,6 +119,10 @@ class MonitoringHandler
     * @param string error value
     */
     public function customApplicationError($dimensionName) {
+        if (gettype($dimensionName) !== "string") {
+            throw new \Exception('dimension arguement must be a string');
+        }
+
         $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => $dimensionName)));
     }
 }
