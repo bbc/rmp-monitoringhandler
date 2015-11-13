@@ -28,7 +28,7 @@
 
     "autoload-dev": {
         "psr-4": {
-            "RMP\\CloudwatchMonitoring\\Tests": "tests/"
+            "RMP\\CloudwatchMonitoring\\Tests\\": "tests/"
         }
     }
 }

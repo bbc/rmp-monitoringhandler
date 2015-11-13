@@ -4,20 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "51c240d886a315cc0e646e870340aa17",
+    "hash": "3cdfdbd25f40aa80fd2b8580d1c8a0ad",
+    "content-hash": "a812fbb356577b2e33c6f15a936becf1",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.9.4",
+            "version": "3.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "b04efb3c73785a3c0b6e6c34740adaaad4d9fc94"
+                "reference": "16258334537e989a65b682141cc027e1c3464017"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/b04efb3c73785a3c0b6e6c34740adaaad4d9fc94",
-                "reference": "b04efb3c73785a3c0b6e6c34740adaaad4d9fc94",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/16258334537e989a65b682141cc027e1c3464017",
+                "reference": "16258334537e989a65b682141cc027e1c3464017",
                 "shasum": ""
             },
             "require": {
@@ -82,7 +83,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2015-11-03 19:40:35"
+            "time": "2015-11-13 00:45:01"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -766,16 +767,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.8.16",
+            "version": "4.8.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "625f8c345606ed0f3a141dfb88f4116f0e22978e"
+                "reference": "fa33d4ad96481b91df343d83e8c8aabed6b1dfd3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/625f8c345606ed0f3a141dfb88f4116f0e22978e",
-                "reference": "625f8c345606ed0f3a141dfb88f4116f0e22978e",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/fa33d4ad96481b91df343d83e8c8aabed6b1dfd3",
+                "reference": "fa33d4ad96481b91df343d83e8c8aabed6b1dfd3",
                 "shasum": ""
             },
             "require": {
@@ -834,7 +835,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-10-23 06:48:33"
+            "time": "2015-11-11 11:32:49"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

@@ -8,6 +8,15 @@ use RMP\CloudwatchMonitoring\MonitoringHandler;
 
 class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @var     \RMP\CloudwatchMonitoring\CloudWatchClientMock
+     */
+    protected $cloudwatchClient;
+
+    /**
+     * @var     \RMP\CloudwatchMonitoring\MonitoringHandler
+     */
+    protected $monitoring;
 
     public function setUp()
     {
@@ -34,11 +43,6 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
                   'Name' => 'BBCEnvironment',
                   'Value' => 'unittests',
                 ),
-                1 =>
-                array (
-                  'Name' => 'instanceId',
-                  'Value' => 'None',
-                ),
               ),
               'Value' => 1,
             ),
@@ -63,11 +67,6 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
                   'Name' => 'BBCEnvironment',
                   'Value' => 'unittests',
                 ),
-                1 =>
-                array (
-                  'Name' => 'instanceId',
-                  'Value' => 'None',
-                ),
               ),
               'Value' => 1,
             ),
@@ -91,11 +90,6 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
                 array (
                   'Name' => 'BBCEnvironment',
                   'Value' => 'unittests',
-                ),
-                1 =>
-                array (
-                  'Name' => 'instanceId',
-                  'Value' => 'None',
                 ),
               ),
               'Value' => 1,
@@ -127,18 +121,11 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
                   'Name' => 'BBCEnvironment',
                   'Value' => 'unittests',
                 ),
-
-                2 =>
-                array (
-                  'Name' => 'instanceId',
-                  'Value' => 'None',
-                ),
               ),
               'Value' => 1,
             ),
           ),
         ));
-
     }
 
     /* Now lets try and break it */
@@ -153,7 +140,5 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
         $this->monitoring->customApplicationError(FALSE);
         $this->monitoring->customApplicationError(true);
         $this->monitoring->customApplicationError(array("dimensionName"));
-
     }
-
 }

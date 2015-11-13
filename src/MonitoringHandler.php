@@ -20,19 +20,34 @@ use Aws\CloudWatch\CloudWatchClient;
 * @package RMP\Monitoring
 *
 */
-
 class MonitoringHandler
 {
+    /**
+     * @var     CloudWatchClient
+     */
     protected $client;
+
+    /**
+     * @var     string
+     */
     protected $namespace;
 
+    /**
+     * @var     string
+     */
+    protected $env;
+
+    /**
+     * MonitoringHandler constructor.
+     *
+     * @param CloudWatchClient  $client
+     * @param string            $namespace
+     * @param string            $env
+     */
     public function __construct(CloudWatchClient $client, $namespace, $env)
     {
         $this->client = $client;
         $this->namespace = 'BBCApp/' . $namespace;
-        /* From what i could see the PHP SDK doesn't provide you with the instance-id so you need to get it yourself */
-        /* Don't do this on localhost or sandboxes as it will fail, just set the instanceID to 'None' */
-        $this->instanceID = ($env === "int" || $env === "test" || $env === "live") ? file_get_contents("http://instance-data/latest/meta-data/instance-id") : "None";
         $this->env = $env;
     }
 
@@ -51,7 +66,6 @@ class MonitoringHandler
     {
         /* append data to $dimensions so it doesn't need to be done every time */
         $dimensions[] = array('Name' => 'BBCEnvironment', 'Value' => $this->env);
-        $dimensions[] = array('Name' => 'instanceId', 'Value' => $this->instanceID);
 
         /* Build metric */
         $this->client->putMetricData(array(
