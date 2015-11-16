@@ -13,13 +13,12 @@ namespace RMP\CloudwatchMonitoring;
 use Aws\CloudWatch\CloudWatchClient;
 
 /**
-* Class MonitoringHandler
-*
-* Handler for monitoring events to AWS Cloudwatch
-*
-* @package RMP\Monitoring
-*
-*/
+ * Class MonitoringHandler
+ *
+ * Handler for monitoring events to AWS Cloudwatch
+ *
+ * @package RMP\Monitoring
+ */
 class MonitoringHandler
 {
     /**
@@ -68,7 +67,7 @@ class MonitoringHandler
         $dimensions[] = array('Name' => 'BBCEnvironment', 'Value' => $this->env);
 
         /* Build metric */
-        $this->client->putMetricData(array(
+        $this->client->putMetricDataAsync(array(
             'Namespace' => $this->namespace,
             'MetricData' => array(
                 array(
@@ -107,34 +106,37 @@ class MonitoringHandler
     /* ---- Application Errors ----  */
 
     /**
-    * This is a dimension for application errors, this is a 500 error within the application will live in here
-    */
+     * This is a dimension for application errors, this is a 500 error within the application will live in here
+     */
     public function application500Error() {
         $this->putMetricData('Http500Response', 1, array());
     }
 
 
     /**
-    * This is an dimensions for 404 on application errors, all errors within the application will live in here
-    */
+     * This is an dimensions for 404 on application errors, all errors within the application will live in here
+     */
     public function application404Error() {
         $this->putMetricData('Http404Response', 1, array());
     }
 
     /**
-    * This is a dimension for application errors, this is a generic catch-all within the application will live in here
-    */
+     * This is a dimension for application errors, this is a generic catch-all within the application will live in here
+     */
     public function applicationError() {
         $this->putMetricData('applicationError', 1, array());
     }
 
     /**
-    * This is an custom dimensions on the application errors meric, an example of this usage is if the application has a specifc statusCode
-    * @param string error value
-    */
+     * This is an custom dimensions on the application errors meric, an example of this usage is if the application has
+     * a specifc statusCode
+     *
+     * @param   string  $dimensionName  error value
+     * @throws  \InvalidArgumentException
+     */
     public function customApplicationError($dimensionName) {
         if (gettype($dimensionName) !== "string") {
-            throw new \Exception('dimension arguement must be a string');
+            throw new \InvalidArgumentException('dimension argument must be a string');
         }
 
         $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => $dimensionName)));
