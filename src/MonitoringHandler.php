@@ -11,6 +11,7 @@
 namespace RMP\CloudwatchMonitoring;
 
 use Aws\CloudWatch\CloudWatchClient;
+use GuzzleHttp\Promise\Promise;
 
 /**
  * Class MonitoringHandler
@@ -35,6 +36,11 @@ class MonitoringHandler
      * @var     string
      */
     protected $env;
+
+    /**
+     * @var     array
+     */
+    protected $promises = [];
 
     /**
      * MonitoringHandler constructor.
@@ -67,7 +73,7 @@ class MonitoringHandler
         $dimensions[] = array('Name' => 'BBCEnvironment', 'Value' => $this->env);
 
         /* Build metric */
-        $this->client->putMetricDataAsync(array(
+        $this->promises[] = $this->client->putMetricDataAsync(array(
             'Namespace' => $this->namespace,
             'MetricData' => array(
                 array(
@@ -101,6 +107,16 @@ class MonitoringHandler
                 )
             )
         );
+    }
+
+    /**
+     * Sends all of the metrics concurrently.
+     *
+     * @return  void
+     */
+    public function sendMetrics()
+    {
+        \GuzzleHttp\Promise\unwrap($this->promises);
     }
 
     /* ---- Application Errors ----  */
