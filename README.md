@@ -20,10 +20,10 @@ Add the project in composer.json
         }
     ],
     "require": {
-        "bbc-rmp/CloudwatchMonitoringHandler": "dev-master",
+        "bbc-rmp/cloudwatch-monitoringhandler": "dev-master",
     }
     
-Run "composer install"
+Run `composer install`
 ```
 
 ## Usage
