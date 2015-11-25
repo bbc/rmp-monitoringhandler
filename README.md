@@ -5,7 +5,7 @@ This is a small PHP component which will add metrics to your cloudwatch account.
 
 ## What powers it
 
-- PHP 5.4
+- PHP 5.6
 - Composer
 - aws sdk
 
