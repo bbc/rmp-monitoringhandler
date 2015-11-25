@@ -10,9 +10,9 @@ This is a small PHP component which will add metrics to your cloudwatch account.
 - aws sdk
 
 ## How to integrate
-```
-Add the project in composer.json
+Add the project in composer.json:
 
+```
     "repositories": [
         {
             "type": "vcs",
@@ -22,12 +22,12 @@ Add the project in composer.json
     "require": {
         "bbc-rmp/cloudwatch-monitoringhandler": "dev-master",
     }
-    
-Run `composer install`
 ```
 
+Run `composer install`
+
 ## Usage
-```
+```php
 use RMP\CloudwatchMonitoringHandler\MonitoringHandler;
 use Aws\CloudWatch\CloudWatchClient;
 use RMP\CloudwatchMonitoring\CloudWatchClientMock; // cloudwatchMonitoring comes with a cloudWatchClient Mock
@@ -55,12 +55,12 @@ $app['monitoring'] = $app->share(function ($c) use ($app) {
 
 // Usage
 
-$app['monitoring']->$this->monitoring->application500Error() // This will send a value of 1 to Http500Error metric, with the instance-id and the BBCEnvironment as values too
+$app['monitoring']->application500Error() // This will send a value of 1 to Http500Error metric, with the instance-id and the BBCEnvironment as values too
 
-$app['monitoring']->$this->monitoring->application404Error() // This will send a value of 1 to Http404Error metric, with the instance-id and the BBCEnvironment as values too
+$app['monitoring']->application404Error() // This will send a value of 1 to Http404Error metric, with the instance-id and the BBCEnvironment as values too
 
-$app['monitoring']->$this->monitoring->applicationError()() // This will send a value of 1 to applicationError metric, with the instance-id and the BBCEnvironment as values too. This is used as a catchAll error for anything not a 404 or a 500
+$app['monitoring']->applicationError() // This will send a value of 1 to applicationError metric, with the instance-id and the BBCEnvironment as values too. This is used as a catchAll error for anything not a 404 or a 500
 
-$app['monitoring']->$this->monitoring->customApplicationError('your error message') // This will send a value of 1 to applicationError metric, with the instance-id and the BBCEnvironment as values too, it will also send error: your error message as another dimension
+$app['monitoring']->customApplicationError('your error message') // This will send a value of 1 to applicationError metric, with the instance-id and the BBCEnvironment as values too, it will also send error: your error message as another dimension
   
 ```
