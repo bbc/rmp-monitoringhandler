@@ -38,6 +38,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
                     [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
                 ],
                 'Value' => 1,
+                'Unit' => 'Count',
             ]],
         ];
 
@@ -56,6 +57,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
                     [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
                 ],
                 'Value' => 1,
+                'Unit' => 'Count',
             ]],
         ];
 
@@ -74,6 +76,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
                     [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
                 ],
                 'Value' => 1,
+                'Unit' => 'Count',
             ]],
         ];
 
@@ -94,6 +97,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
                     [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
                 ],
                 'Value' => 1,
+                'Unit' => 'Count',
             ]],
         ];
 
