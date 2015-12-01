@@ -40,11 +40,10 @@ class CloudWatchClientMock extends CloudWatchClient
      * @param array $dimensions dimensions
      *
     */
-    public function putMetricData($metric)
+    public function putMetricDataAsync($metric)
     {
         // Add metric to the queue
         array_unshift($this->metricQueue, $metric);
-
     }
 
     public function getLatestMetric()

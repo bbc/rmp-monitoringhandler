@@ -131,7 +131,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     /* Now lets try and break it */
     /**
      * @expectedException Exception
-     * @expectedExceptionMessage dimension arguement must be a string
+     * @expectedExceptionMessage dimension argument must be a string
      */
     public function testExceptionWhenUsingBadArgument()
     {
