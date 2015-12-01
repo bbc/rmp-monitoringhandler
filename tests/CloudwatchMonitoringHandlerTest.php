@@ -29,107 +29,80 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     public function test500Error()
     {
         $this->monitoring->application500Error();
-        $this->assertEquals($this->cloudwatchClient->getLatestMetric(), array (
-          'Namespace' => 'BBCApp/radio-nav-service',
-          'MetricData' =>
-          array (
-            0 =>
-            array (
-              'MetricName' => 'Http500Response',
-              'Dimensions' =>
-              array (
-                0 =>
-                array (
-                  'Name' => 'BBCEnvironment',
-                  'Value' => 'unittests',
-                ),
-              ),
-              'Value' => 1,
-            ),
-          ),
-        ));
+
+        $expectedMetric = [
+            'Namespace' => 'BBCApp/radio-nav-service',
+            'MetricData' => [[
+                'MetricName' => 'Http500Response',
+                'Dimensions' => [
+                    [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
+                ],
+                'Value' => 1,
+            ]],
+        ];
+
+        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric());
     }
 
     public function test404Error()
     {
         $this->monitoring->application404Error();
-        $this->assertEquals($this->cloudwatchClient->getLatestMetric(), array (
-          'Namespace' => 'BBCApp/radio-nav-service',
-          'MetricData' =>
-          array (
-            0 =>
-            array (
-              'MetricName' => 'Http404Response',
-              'Dimensions' =>
-              array (
-                0 =>
-                array (
-                  'Name' => 'BBCEnvironment',
-                  'Value' => 'unittests',
-                ),
-              ),
-              'Value' => 1,
-            ),
-          ),
-        ));
+
+        $expectedMetric = [
+            'Namespace' => 'BBCApp/radio-nav-service',
+            'MetricData' => [[
+                'MetricName' => 'Http404Response',
+                'Dimensions' => [
+                    [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
+                ],
+                'Value' => 1,
+            ]],
+        ];
+
+        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric());
     }
 
     public function testCatchAllError()
     {
         $this->monitoring->applicationError();
-        $this->assertEquals($this->cloudwatchClient->getLatestMetric(), array (
-          'Namespace' => 'BBCApp/radio-nav-service',
-          'MetricData' =>
-          array (
-            0 =>
-            array (
-              'MetricName' => 'applicationError',
-              'Dimensions' =>
-              array (
-                0 =>
-                array (
-                  'Name' => 'BBCEnvironment',
-                  'Value' => 'unittests',
-                ),
-              ),
-              'Value' => 1,
-            ),
-          ),
-        ));
+
+        $expectedMetric = [
+            'Namespace' => 'BBCApp/radio-nav-service',
+            'MetricData' => [[
+                'MetricName' => 'applicationError',
+                'Dimensions' => [
+                    [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
+                ],
+                'Value' => 1,
+            ]],
+        ];
+
+        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric());
     }
 
 
     public function testCustomError()
     {
         $this->monitoring->customApplicationError("something_has_broken");
-        $this->assertEquals($this->cloudwatchClient->getLatestMetric(), array (
-          'Namespace' => 'BBCApp/radio-nav-service',
-          'MetricData' =>
-          array (
-            0 =>
-            array (
-              'MetricName' => 'applicationError',
-              'Dimensions' =>
-              array (
-                0 =>
-                array (
-                  'Name' => 'error',
-                  'Value' => 'something_has_broken',
-                ),
-                1 =>
-                array (
-                  'Name' => 'BBCEnvironment',
-                  'Value' => 'unittests',
-                ),
-              ),
-              'Value' => 1,
-            ),
-          ),
-        ));
+
+        $expectedMetric = [
+            'Namespace' => 'BBCApp/radio-nav-service',
+            'MetricData' => [[
+                'MetricName' => 'applicationError',
+                'Dimensions' => [
+                    [ 'Name' => 'error', 'Value' => 'something_has_broken' ],
+                    [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
+                ],
+                'Value' => 1,
+            ]],
+        ];
+
+        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric());
     }
 
-    /* Now lets try and break it */
     /**
+     * Now lets try and break it
+     *
      * @expectedException Exception
      * @expectedExceptionMessage dimension argument must be a string
      */
