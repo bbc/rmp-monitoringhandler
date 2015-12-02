@@ -65,25 +65,24 @@ class MonitoringHandler
      * @param string $metricName Metricname
      * @param int $value value of metric
      * @param array $dimensions dimensions
+     * @param string $unit the unit of the metric. From the list found at http://docs.aws.amazon.com/aws-sdk-php/v3/api/api-monitoring-2010-08-01.html#putmetricdata
      *
     */
-    public function putMetricData($metricName, $value, $dimensions)
+    public function putMetricData($metricName, $value, $dimensions, $unit='None')
     {
         /* append data to $dimensions so it doesn't need to be done every time */
         $dimensions[] = array('Name' => 'BBCEnvironment', 'Value' => $this->env);
 
         /* Build metric */
-        $this->promises[] = $this->client->putMetricDataAsync(array(
+        $this->promises[] = $this->client->putMetricDataAsync([
             'Namespace' => $this->namespace,
-            'MetricData' => array(
-                array(
-                    'MetricName' => $metricName,
-                    'Dimensions' => $dimensions,
-                    'Value' => $value
-                    )
-                )
-            )
-        );
+            'MetricData' => [[
+                'MetricName' => $metricName,
+                'Dimensions' => $dimensions,
+                'Value' => $value,
+                'Unit' => $unit,
+            ]]
+        ]);
     }
 
     /**
@@ -96,17 +95,12 @@ class MonitoringHandler
     */
     public function addApiCall($backend, $type)
     {
-        $this->putMetricData("apicalls", 1, array(
-            array(
-                'Name' => 'backend',
-                'Value' => $backend
-                ),
-            array(
-                'Name' => 'type',
-                'Value' => $type
-                )
-            )
-        );
+        $dimensions = [
+            [ 'Name' => 'backend', 'Value' => $backend ],
+            [ 'Name' => 'type', 'Value' => $type ],
+        ];
+
+        $this->putMetricData('apicalls', 1, $dimensions, 'Count');
     }
 
     /**
@@ -124,23 +118,26 @@ class MonitoringHandler
     /**
      * This is a dimension for application errors, this is a 500 error within the application will live in here
      */
-    public function application500Error() {
-        $this->putMetricData('Http500Response', 1, array());
+    public function application500Error()
+    {
+        $this->putMetricData('Http500Response', 1, [], 'Count');
     }
 
 
     /**
      * This is an dimensions for 404 on application errors, all errors within the application will live in here
      */
-    public function application404Error() {
-        $this->putMetricData('Http404Response', 1, array());
+    public function application404Error()
+    {
+        $this->putMetricData('Http404Response', 1, [], 'Count');
     }
 
     /**
      * This is a dimension for application errors, this is a generic catch-all within the application will live in here
      */
-    public function applicationError() {
-        $this->putMetricData('applicationError', 1, array());
+    public function applicationError()
+    {
+        $this->putMetricData('applicationError', 1, [], 'Count');
     }
 
     /**
@@ -150,11 +147,16 @@ class MonitoringHandler
      * @param   string  $dimensionName  error value
      * @throws  \InvalidArgumentException
      */
-    public function customApplicationError($dimensionName) {
+    public function customApplicationError($dimensionName)
+    {
         if (gettype($dimensionName) !== "string") {
             throw new \InvalidArgumentException('dimension argument must be a string');
         }
 
-        $this->putMetricData('applicationError', 1, array(array('Name' => 'error', 'Value' => $dimensionName)));
+        $dimensions = [
+            ['Name' => 'error', 'Value' => $dimensionName],
+        ];
+
+        $this->putMetricData('applicationError', 1, $dimensions, 'Count');
     }
 }
