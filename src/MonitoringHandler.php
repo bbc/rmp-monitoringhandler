@@ -110,7 +110,11 @@ class MonitoringHandler
      */
     public function sendMetrics()
     {
-        \GuzzleHttp\Promise\unwrap($this->promises);
+        /* If promises is an empty guzzle moans */
+        /* Also don't use guzzle at all if inside unit tests or localhost */
+        if ($this->env !== 'local' && $this->env !== 'unittests') {
+            \GuzzleHttp\Promise\unwrap($this->promises);
+        }
     }
 
     /* ---- Application Errors ----  */
