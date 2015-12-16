@@ -21,9 +21,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->cloudwatchClient = new CloudWatchClientMock();
-        /* Make sure our environment is unittests otherwise monitoringHandler will try and make calls */
         $this->monitoring = new MonitoringHandler($this->cloudwatchClient, 'radio-nav-service', 'unittests');
-
     }
 
     public function test500Error()
@@ -42,7 +40,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
             ]],
         ];
 
-        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric());
+        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
     }
 
     public function test404Error()
@@ -61,7 +59,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
             ]],
         ];
 
-        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric());
+        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
     }
 
     public function testCatchAllError()
@@ -80,7 +78,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
             ]],
         ];
 
-        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric());
+        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
     }
 
 
@@ -101,7 +99,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
             ]],
         ];
 
-        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric());
+        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
     }
 
     /**

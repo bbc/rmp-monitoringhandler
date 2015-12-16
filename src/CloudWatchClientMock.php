@@ -10,6 +10,7 @@
 namespace RMP\CloudwatchMonitoring;
 
 use Aws\CloudWatch\CloudWatchClient;
+use GuzzleHttp\Promise\Promise;
 
 
 /**
@@ -42,14 +43,18 @@ class CloudWatchClientMock extends CloudWatchClient
     */
     public function putMetricDataAsync($metric)
     {
+        $metricPromise = new Promise(function () use (&$metricPromise, &$metric) {
+            $metricPromise->resolve($metric);
+        });
+
         // Add metric to the queue
-        array_unshift($this->metricQueue, $metric);
+        array_unshift($this->metricQueue, $metricPromise);
+        return $metricPromise;
     }
 
     public function getLatestMetric()
     {
-        $metric = array_shift($this->metricQueue);
-        return $metric;
+        return array_shift($this->metricQueue);
     }
 
     /* useful for outside functions to know how many metrics have been saved up */
