@@ -27,6 +27,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     public function test500Error()
     {
         $this->monitoring->application500Error();
+        $this->monitoring->sendMetrics();
 
         $expectedMetric = [
             'Namespace' => 'BBCApp/radio-nav-service',
@@ -46,6 +47,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     public function test404Error()
     {
         $this->monitoring->application404Error();
+        $this->monitoring->sendMetrics();
 
         $expectedMetric = [
             'Namespace' => 'BBCApp/radio-nav-service',
@@ -65,6 +67,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     public function testCatchAllError()
     {
         $this->monitoring->applicationError();
+        $this->monitoring->sendMetrics();
 
         $expectedMetric = [
             'Namespace' => 'BBCApp/radio-nav-service',
@@ -85,6 +88,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     public function testCustomError()
     {
         $this->monitoring->customApplicationError("something_has_broken");
+        $this->monitoring->sendMetrics();
 
         $expectedMetric = [
             'Namespace' => 'BBCApp/radio-nav-service',
@@ -100,6 +104,16 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
         ];
 
         $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
+    }
+
+    public function testBatchErrors()
+    {
+        for($i = 0; $i < 173; $i++) {
+            $this->monitoring->customApplicationError("metric $i");
+        }
+        $this->monitoring->sendMetrics();
+        $this->assertEquals(173, $this->cloudwatchClient->getSentMetricCount());
+        $this->assertEquals(ceil(173 / MonitoringHandler::METRICDATUM_PER_REQUEST), $this->cloudwatchClient->getRequestCount());
     }
 
     /**
