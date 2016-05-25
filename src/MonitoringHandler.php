@@ -117,6 +117,7 @@ class MonitoringHandler
          * see http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_limits.html
          */
         $metricGroups = array_chunk($this->metrics, self::METRICDATUM_PER_REQUEST);
+        $this->metrics = [];
         $promises = [];
         foreach ($metricGroups as $metricGroup) {
             $promises[] = $this->client->putMetricDataAsync([

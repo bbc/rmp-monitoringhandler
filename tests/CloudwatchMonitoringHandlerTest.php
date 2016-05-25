@@ -113,7 +113,32 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
         }
         $this->monitoring->sendMetrics();
         $this->assertEquals(173, $this->cloudwatchClient->getSentMetricCount());
-        $this->assertEquals(ceil(173 / MonitoringHandler::METRICDATUM_PER_REQUEST), $this->cloudwatchClient->getRequestCount());
+        // 9 total requests (batches of 20)
+        $this->assertEquals(9, $this->cloudwatchClient->getRequestCount());
+    }
+
+    public function testBatchEventsSentOnce()
+    {
+        for($i = 0; $i < 33; $i++) {
+            $this->monitoring->customApplicationError("metric $i");
+        }
+        $this->monitoring->sendMetrics();
+        $this->assertEquals(33, $this->cloudwatchClient->getSentMetricCount());
+        // 2 total requests (batches of 20)
+        $this->assertEquals(2, $this->cloudwatchClient->getRequestCount());
+        $this->cloudwatchClient->resetMetrics();
+        $this->monitoring->customApplicationError("wibble");
+        $this->monitoring->sendMetrics();
+        $this->assertEquals(1, $this->cloudwatchClient->getSentMetricCount());
+        $this->assertEquals(1, $this->cloudwatchClient->getRequestCount());
+
+    }
+
+    public function testNoEvents()
+    {
+        $this->monitoring->sendMetrics();
+        $this->assertEquals(0, $this->cloudwatchClient->getSentMetricCount());
+        $this->assertEquals(0, $this->cloudwatchClient->getRequestCount());
     }
 
     /**
