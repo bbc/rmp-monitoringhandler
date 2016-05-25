@@ -78,12 +78,17 @@ class MonitoringHandler
         /* append data to $dimensions so it doesn't need to be done every time */
         $dimensions[] = array('Name' => 'BBCEnvironment', 'Value' => $this->env);
 
-        /* Build metric */
+        /**
+         * Build metric
+         * Note that we add the current time as a timestamp
+         * as we're sending these async
+         */
         $this->metrics[] = [
             'MetricName' => $metricName,
             'Dimensions' => $dimensions,
             'Value' => $value,
             'Unit' => $unit,
+            'Timestamp' => new \DateTime()
         ];
     }
 
