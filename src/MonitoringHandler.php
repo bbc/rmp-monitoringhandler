@@ -23,6 +23,11 @@ use GuzzleHttp\Promise\Promise;
 class MonitoringHandler
 {
     /**
+     * Maximum number of data points per API call
+     */
+    CONST METRICDATUM_PER_REQUEST = 20;
+
+    /**
      * @var     CloudWatchClient
      */
     protected $client;
@@ -40,7 +45,7 @@ class MonitoringHandler
     /**
      * @var     array
      */
-    protected $promises = [];
+    protected $metrics = [];
 
     /**
      * MonitoringHandler constructor.
@@ -73,16 +78,18 @@ class MonitoringHandler
         /* append data to $dimensions so it doesn't need to be done every time */
         $dimensions[] = array('Name' => 'BBCEnvironment', 'Value' => $this->env);
 
-        /* Build metric */
-        $this->promises[] = $this->client->putMetricDataAsync([
-            'Namespace' => $this->namespace,
-            'MetricData' => [[
-                'MetricName' => $metricName,
-                'Dimensions' => $dimensions,
-                'Value' => $value,
-                'Unit' => $unit,
-            ]]
-        ]);
+        /**
+         * Build metric
+         * Note that we add the current time as a timestamp
+         * as we're sending these async
+         */
+        $this->metrics[] = [
+            'MetricName' => $metricName,
+            'Dimensions' => $dimensions,
+            'Value' => $value,
+            'Unit' => $unit,
+            'Timestamp' => new \DateTime()
+        ];
     }
 
     /**
@@ -110,7 +117,20 @@ class MonitoringHandler
      */
     public function sendMetrics()
     {
-        \GuzzleHttp\Promise\unwrap($this->promises);
+        /**
+         * Batch up metrics into 20 items per PutMetricData request to avoid limits on API calls
+         * see http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_limits.html
+         */
+        $metricGroups = array_chunk($this->metrics, self::METRICDATUM_PER_REQUEST);
+        $this->metrics = [];
+        $promises = [];
+        foreach ($metricGroups as $metricGroup) {
+            $promises[] = $this->client->putMetricDataAsync([
+                'Namespace' => $this->namespace,
+                'MetricData' => $metricGroup,
+            ]);
+        }
+        \GuzzleHttp\Promise\unwrap($promises);
     }
 
     /* ---- Application Errors ----  */

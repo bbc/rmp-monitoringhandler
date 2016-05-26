@@ -29,6 +29,8 @@ class CloudWatchClientMock extends CloudWatchClient
     /* this will be useful when testing to see what data was thrown into our CloudWatchClient */
     protected $metricQueue = array();
 
+    protected $sentMetrics = array();
+
     public function __construct() {
 
     }
@@ -44,6 +46,7 @@ class CloudWatchClientMock extends CloudWatchClient
     public function putMetricDataAsync($metric)
     {
         $metricPromise = new Promise(function () use (&$metricPromise, &$metric) {
+            $this->sentMetrics = array_merge($this->sentMetrics, $metric['MetricData']);
             $metricPromise->resolve($metric);
         });
 
@@ -57,15 +60,22 @@ class CloudWatchClientMock extends CloudWatchClient
         return array_shift($this->metricQueue);
     }
 
-    /* useful for outside functions to know how many metrics have been saved up */
-    public function getMetricCount()
+    /* useful for outside functions to know how many requests have been saved up */
+    public function getRequestCount()
     {
         return count($this->metricQueue);
+    }
+
+    /* useful for outside functions to know how many metrics have been saved up */
+    public function getSentMetricCount()
+    {
+        return count($this->sentMetrics);
     }
 
     /* setup / teardown functions can start this again */
     public function resetMetrics()
     {
         $this->metricQueue = array();
+        $this->sentMetrics = array();
     }
 }

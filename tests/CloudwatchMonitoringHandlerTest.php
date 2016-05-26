@@ -27,6 +27,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     public function test500Error()
     {
         $this->monitoring->application500Error();
+        $this->monitoring->sendMetrics();
 
         $expectedMetric = [
             'Namespace' => 'BBCApp/radio-nav-service',
@@ -46,6 +47,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     public function test404Error()
     {
         $this->monitoring->application404Error();
+        $this->monitoring->sendMetrics();
 
         $expectedMetric = [
             'Namespace' => 'BBCApp/radio-nav-service',
@@ -65,6 +67,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     public function testCatchAllError()
     {
         $this->monitoring->applicationError();
+        $this->monitoring->sendMetrics();
 
         $expectedMetric = [
             'Namespace' => 'BBCApp/radio-nav-service',
@@ -85,6 +88,7 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
     public function testCustomError()
     {
         $this->monitoring->customApplicationError("something_has_broken");
+        $this->monitoring->sendMetrics();
 
         $expectedMetric = [
             'Namespace' => 'BBCApp/radio-nav-service',
@@ -100,6 +104,41 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
         ];
 
         $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
+    }
+
+    public function testBatchErrors()
+    {
+        for($i = 0; $i < 173; $i++) {
+            $this->monitoring->customApplicationError("metric $i");
+        }
+        $this->monitoring->sendMetrics();
+        $this->assertEquals(173, $this->cloudwatchClient->getSentMetricCount());
+        // 9 total requests (batches of 20)
+        $this->assertEquals(9, $this->cloudwatchClient->getRequestCount());
+    }
+
+    public function testBatchEventsSentOnce()
+    {
+        for($i = 0; $i < 33; $i++) {
+            $this->monitoring->customApplicationError("metric $i");
+        }
+        $this->monitoring->sendMetrics();
+        $this->assertEquals(33, $this->cloudwatchClient->getSentMetricCount());
+        // 2 total requests (batches of 20)
+        $this->assertEquals(2, $this->cloudwatchClient->getRequestCount());
+        $this->cloudwatchClient->resetMetrics();
+        $this->monitoring->customApplicationError("wibble");
+        $this->monitoring->sendMetrics();
+        $this->assertEquals(1, $this->cloudwatchClient->getSentMetricCount());
+        $this->assertEquals(1, $this->cloudwatchClient->getRequestCount());
+
+    }
+
+    public function testNoEvents()
+    {
+        $this->monitoring->sendMetrics();
+        $this->assertEquals(0, $this->cloudwatchClient->getSentMetricCount());
+        $this->assertEquals(0, $this->cloudwatchClient->getRequestCount());
     }
 
     /**
