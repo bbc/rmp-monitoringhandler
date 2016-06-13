@@ -64,6 +64,28 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
     }
 
+    public function testApiCall()
+    {
+        $this->monitoring->addApiCall('blur', 'error_404');
+        $this->monitoring->sendMetrics();
+
+        $expectedMetric = [
+            'Namespace' => 'BBCApp/radio-nav-service',
+            'MetricData' => [[
+                'MetricName' => 'apicalls',
+                'Dimensions' => [
+                    [ 'Name' => 'backend', 'Value' => 'blur' ],
+                    [ 'Name' => 'type', 'Value' => 'error_404' ],
+                    [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
+                ],
+                'Value' => 1,
+                'Unit' => 'Count',
+            ]],
+        ];
+
+        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
+    }
+
     public function testCatchAllError()
     {
         $this->monitoring->applicationError();

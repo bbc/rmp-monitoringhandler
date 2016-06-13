@@ -88,7 +88,6 @@ class MonitoringHandler
             'Dimensions' => $dimensions,
             'Value' => $value,
             'Unit' => $unit,
-            'Timestamp' => new \DateTime()
         ];
     }
 
@@ -108,6 +107,16 @@ class MonitoringHandler
         ];
 
         $this->putMetricData('apicalls', 1, $dimensions, 'Count');
+    }
+
+    /**
+     * Returns all the metrics that are pending write
+     *
+     * @return  array
+     */
+    public function getMetrics()
+    {
+        return $this->metrics;
     }
 
     /**

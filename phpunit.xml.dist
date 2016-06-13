@@ -8,13 +8,13 @@
         verbose="false">
 
     <testsuites>
-        <testsuite name="Hello Application Tests">
+        <testsuite name="Monitoring Handler Tests">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./app/src</directory>
+            <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
     <php>
