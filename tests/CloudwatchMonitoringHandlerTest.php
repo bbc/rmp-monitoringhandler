@@ -29,19 +29,17 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
         $this->monitoring->application500Error();
         $this->monitoring->sendMetrics();
 
-        $expectedMetric = [
-            'Namespace' => 'BBCApp/radio-nav-service',
-            'MetricData' => [[
-                'MetricName' => 'Http500Response',
-                'Dimensions' => [
-                    [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
-                ],
-                'Value' => 1,
-                'Unit' => 'Count',
-            ]],
-        ];
+        $actualMetric = $this->cloudwatchClient->getLatestMetric()->wait();
 
-        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
+        $this->assertEquals('BBCApp/radio-nav-service', $actualMetric['Namespace']);
+        $this->assertEquals('Http500Response', $actualMetric['MetricData'][0]['MetricName']);
+        $this->assertEquals(
+            [[ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ]],
+            $actualMetric['MetricData'][0]['Dimensions']
+        );
+        $this->assertEquals(1, $actualMetric['MetricData'][0]['Value']);
+        $this->assertEquals('Count', $actualMetric['MetricData'][0]['Unit']);
+        $this->assertTrue(isset($actualMetric['MetricData'][0]['Timestamp']));
     }
 
     public function test404Error()
@@ -49,19 +47,17 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
         $this->monitoring->application404Error();
         $this->monitoring->sendMetrics();
 
-        $expectedMetric = [
-            'Namespace' => 'BBCApp/radio-nav-service',
-            'MetricData' => [[
-                'MetricName' => 'Http404Response',
-                'Dimensions' => [
-                    [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
-                ],
-                'Value' => 1,
-                'Unit' => 'Count',
-            ]],
-        ];
+        $actualMetric = $this->cloudwatchClient->getLatestMetric()->wait();
 
-        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
+        $this->assertEquals('BBCApp/radio-nav-service', $actualMetric['Namespace']);
+        $this->assertEquals('Http404Response', $actualMetric['MetricData'][0]['MetricName']);
+        $this->assertEquals(
+            [[ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ]],
+            $actualMetric['MetricData'][0]['Dimensions']
+        );
+        $this->assertEquals(1, $actualMetric['MetricData'][0]['Value']);
+        $this->assertEquals('Count', $actualMetric['MetricData'][0]['Unit']);
+        $this->assertTrue(isset($actualMetric['MetricData'][0]['Timestamp']));
     }
 
     public function testApiCall()
@@ -69,21 +65,21 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
         $this->monitoring->addApiCall('blur', 'error_404');
         $this->monitoring->sendMetrics();
 
-        $expectedMetric = [
-            'Namespace' => 'BBCApp/radio-nav-service',
-            'MetricData' => [[
-                'MetricName' => 'apicalls',
-                'Dimensions' => [
-                    [ 'Name' => 'backend', 'Value' => 'blur' ],
-                    [ 'Name' => 'type', 'Value' => 'error_404' ],
-                    [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
-                ],
-                'Value' => 1,
-                'Unit' => 'Count',
-            ]],
-        ];
+        $actualMetric = $this->cloudwatchClient->getLatestMetric()->wait();
 
-        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
+        $this->assertEquals('BBCApp/radio-nav-service', $actualMetric['Namespace']);
+        $this->assertEquals('apicalls', $actualMetric['MetricData'][0]['MetricName']);
+        $this->assertEquals(
+            [
+                [ 'Name' => 'backend', 'Value' => 'blur' ],
+                [ 'Name' => 'type', 'Value' => 'error_404' ],
+                [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
+            ],
+            $actualMetric['MetricData'][0]['Dimensions']
+        );
+        $this->assertEquals(1, $actualMetric['MetricData'][0]['Value']);
+        $this->assertEquals('Count', $actualMetric['MetricData'][0]['Unit']);
+        $this->assertTrue(isset($actualMetric['MetricData'][0]['Timestamp']));
     }
 
     public function testCatchAllError()
@@ -91,19 +87,19 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
         $this->monitoring->applicationError();
         $this->monitoring->sendMetrics();
 
-        $expectedMetric = [
-            'Namespace' => 'BBCApp/radio-nav-service',
-            'MetricData' => [[
-                'MetricName' => 'applicationError',
-                'Dimensions' => [
-                    [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
-                ],
-                'Value' => 1,
-                'Unit' => 'Count',
-            ]],
-        ];
+        $actualMetric = $this->cloudwatchClient->getLatestMetric()->wait();
 
-        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
+        $this->assertEquals('BBCApp/radio-nav-service', $actualMetric['Namespace']);
+        $this->assertEquals('applicationError', $actualMetric['MetricData'][0]['MetricName']);
+        $this->assertEquals(
+            [
+                [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
+            ],
+            $actualMetric['MetricData'][0]['Dimensions']
+        );
+        $this->assertEquals(1, $actualMetric['MetricData'][0]['Value']);
+        $this->assertEquals('Count', $actualMetric['MetricData'][0]['Unit']);
+        $this->assertTrue(isset($actualMetric['MetricData'][0]['Timestamp']));
     }
 
 
@@ -112,20 +108,20 @@ class CloudWatchMonitoringTest extends PHPUnit_Framework_TestCase
         $this->monitoring->customApplicationError("something_has_broken");
         $this->monitoring->sendMetrics();
 
-        $expectedMetric = [
-            'Namespace' => 'BBCApp/radio-nav-service',
-            'MetricData' => [[
-                'MetricName' => 'applicationError',
-                'Dimensions' => [
-                    [ 'Name' => 'error', 'Value' => 'something_has_broken' ],
-                    [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
-                ],
-                'Value' => 1,
-                'Unit' => 'Count',
-            ]],
-        ];
+        $actualMetric = $this->cloudwatchClient->getLatestMetric()->wait();
 
-        $this->assertEquals($expectedMetric, $this->cloudwatchClient->getLatestMetric()->wait());
+        $this->assertEquals('BBCApp/radio-nav-service', $actualMetric['Namespace']);
+        $this->assertEquals('applicationError', $actualMetric['MetricData'][0]['MetricName']);
+        $this->assertEquals(
+            [
+                [ 'Name' => 'error', 'Value' => 'something_has_broken' ],
+                [ 'Name' => 'BBCEnvironment', 'Value' => 'unittests' ],
+            ],
+            $actualMetric['MetricData'][0]['Dimensions']
+        );
+        $this->assertEquals(1, $actualMetric['MetricData'][0]['Value']);
+        $this->assertEquals('Count', $actualMetric['MetricData'][0]['Unit']);
+        $this->assertTrue(isset($actualMetric['MetricData'][0]['Timestamp']));
     }
 
     public function testBatchErrors()

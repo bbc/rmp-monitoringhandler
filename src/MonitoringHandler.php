@@ -88,6 +88,7 @@ class MonitoringHandler
             'Dimensions' => $dimensions,
             'Value' => $value,
             'Unit' => $unit,
+            'Timestamp' => new \DateTime()
         ];
     }
 
