@@ -111,6 +111,16 @@ class MonitoringHandler
     }
 
     /**
+     * Returns all the metrics that are pending write
+     *
+     * @return  array
+     */
+    public function getMetrics()
+    {
+        return $this->metrics;
+    }
+
+    /**
      * Sends all of the metrics concurrently.
      *
      * @return  void

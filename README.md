@@ -64,3 +64,36 @@ $app['monitoring']->applicationError() // This will send a value of 1 to applica
 $app['monitoring']->customApplicationError('your error message') // This will send a value of 1 to applicationError metric, with the instance-id and the BBCEnvironment as values too, it will also send error: your error message as another dimension
   
 ```
+
+## Unit Test Helpers
+
+Unit testing for monitoring is a pain in the backside as the data structure passed to CloudWatch is fairly complex.
+To help, this library provides a trait you can put in your TestCases to ease this process:
+
+```php
+<?php
+
+use RMP\CloudwatchMonitoring\MonitoringAssertions;
+
+class MyTest extends \PHPUnit_Framework_TestCase
+{
+    use MonitoringAssertions;
+    
+    public function testSomething()
+    {
+        $monitor = new MonitoringHandler();
+        
+        // Asserts that the monitoring has seen a metric with the MetricName of "applicationError":
+        $this->assertMonitoringContains($monitor, 'applicationError');
+        
+        // Asserts that the monitoring has seen a metric with the MetricName of 'applicationError' AND
+        // that that metric has a given dimension:
+        $this->assertMonitoringHasDimension($monitor, 'applicationError', ['Name' => 'backend', 'Value' => 'blur']);
+        
+        // Asserts that the monitoring has seen a metric with the MetricName of 'applicationError' AND
+        // that that metric has a given value (22):
+        $this->assertMonitoringHasValue($monitor, 'applicationError', 22);
+    }
+}
+
+```
