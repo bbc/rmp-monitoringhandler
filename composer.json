@@ -1,7 +1,7 @@
 {
     "name": "bbc-rmp/cloudwatch-monitoringhandler",
     "type": "library",
-    "license": "proprietary",
+    "license": "Apache-2.0",
     "description": "Handler for RMP projects to post monitoring events to cloudwatch",
 
     "authors":[
